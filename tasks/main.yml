@@ -1,24 +1,35 @@
 ---
+# tasks file for wol
 
-- name: WOL | Check if enabled
+- name: Ensure the required packages are install on our wol client(s)
+  package:
+    name: "{{ wol_client_packages }}"
+    state: present
+  register: wol_install_client_packages
+  until: wol_install_client_packages is succeeded
+  retries: 3
+
+- name: Ensure the required packages are install on our wol server
+  delegate: "{{ wol_server_hostname }}"
+  package:
+    name: "{{ wol_server_packages }}"
+    state: present
+  register: wol_install_client_packages
+  until: wol_install_client_packages is succeeded
+  retries: 3
+
+- name: What is the clients target nic wol status right now?
   shell: >
-    ethtool {{ wol_interface }} | grep 'Wake-on' | tail -1 | awk '{print substr($0,length,1)}'
-  register: wol_enabled
+    ethtool {{ {{ ansible_default_ipv4.interface }} }} | grep 'Wake-on' | tail -1 | awk '{print substr($0,length,1)}'
+  register: wol_current_options
 
-- name: WOL | Current status is
+- name: Print the current wol status on our client
   debug:
-    msg: "Current status is: {{ wol_enabled.stdout }}"
+    msg: "Current status is: {{ wol_current_status.stdout }}"
 
-- name: WOL | Set new status if it not proper
+- name: Update client wol options if they are not equal to the current setting
   shell: >
     ethtool -s {{ wol_interface }} wol {{ wol_status }}
-  when: "wol_status != wol_enabled.stdout"
+  when: "wol_options != wol_current_options.stdout"
 
-- name: WOL | Get remote MAC address to send magic packet to it
-  shell: >
-    ip addr show | grep -A1 '{{ wol_interface }}: ' | grep 'link/ether' | awk '{print substr($0, 16, 17)}'
-  register: wol_mac
-
-- name: WOL | Remote MAC address is
-  debug:
-    msg: "Use 'wakeonlan {{ wol_mac.stdout }}'"
+- name: If our current status does not equal our desired status then update the status

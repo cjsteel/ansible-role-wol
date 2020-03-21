@@ -1,18 +1,40 @@
 ---
+galaxy_info:
+  author: Robert de Bock
+  role_name: wol
+  description: Install and configure wol on your system.
+  license: Apache-2.0
+  company: none
+  min_ansible_version: 2.7
+
+  platforms:
+    - name: Alpine
+      versions:
+        - all
+    - name: ArchLinux
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+    - name: EL
+      versions:
+        - 7
+        - 8
+    - name: Fedora
+      versions:
+        - all
+    - name: OpenSUSE
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - artful
+        - bionic
+
+  galaxy_tags:
+    - wol
+    - centos
+    - redhat
 
 dependencies: []
-
-galaxy_info:
-  author: igor_mukhin
-  description: Enabling/disabling Wake-on-Lan (WOL) feature on Debian/Ubuntu.
-  license: "MIT"
-  min_ansible_version: 1.4
-  platforms:
-  - name: Ubuntu
-    versions:
-    - all
-  - name: Debian
-    versions:
-    - all
-  categories:
-    - system

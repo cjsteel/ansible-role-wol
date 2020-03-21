@@ -1,8 +1,28 @@
 ---
+# defaults file for wol
 
-# Needed WOL status
-# "d" for disable
-# "g" for enabled
-wol_status: d
+wol_server_hostname: localhost           # probably the Ansible controller
 
-wol_interface: eth0
+# Wake-on-Lan options
+#  wol p|u|m|b|a|g|s|d...
+#
+# The argument to the `wol` command is a string of characters specifying which options to enable.
+#
+# Example:
+#
+#   wol pgu # Wake up on PHY,MagicPacket and unicast messages
+#
+# Wake-on-LAN options list in the `man wol` output
+# 
+# p   Wake on PHY activity
+# u   Wake on unicast messages
+# m   Wake on multicast messages
+# b   Wake on broadcast messages
+# a   Wake on ARP
+# g   Wake on MagicPacket™
+# s   Enable SecureOn™ password for MagicPacket™
+# d   Disable  (wake  on  nothing).   This option clears all
+#     previous options.
+
+wol_options: d  # So "d" will disable WoL and "g" would enabled WoL using MagicPacket
+
