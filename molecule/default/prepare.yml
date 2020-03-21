@@ -6,3 +6,7 @@
 
   roles:
     - role: robertdebock.bootstrap
+    - role: robertdebock.core_dependencies
+    - role: robertdebock.epel
+    - role: robertdebock.update_package_cache
+

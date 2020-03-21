@@ -5,17 +5,8 @@
   package:
     name: "{{ wol_client_packages }}"
     state: present
-  register: wol_install_client_packages
-  until: wol_install_client_packages is succeeded
-  retries: 3
-
-- name: Ensure the required packages are install on our wol server
-  delegate: "{{ wol_server_hostname }}"
-  package:
-    name: "{{ wol_server_packages }}"
-    state: present
-  register: wol_install_client_packages
-  until: wol_install_client_packages is succeeded
+  register: wol_client_packages_installed
+  until: wol_client_packages_installed is succeeded
   retries: 3
 
 - name: What is the clients target nic wol status right now?
@@ -25,11 +16,10 @@
 
 - name: Print the current wol status on our client
   debug:
-    msg: "Current status is: {{ wol_current_status.stdout }}"
+    msg: "Current status is: {{ wol_current_options.stdout }}"
 
 - name: Update client wol options if they are not equal to the current setting
   shell: >
     ethtool -s {{ wol_interface }} wol {{ wol_status }}
   when: "wol_options != wol_current_options.stdout"
 
-- name: If our current status does not equal our desired status then update the status

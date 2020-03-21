@@ -5,6 +5,8 @@ ansible-role-wol
 
 The purpose of this role is to install and configure wol on your system.
 
+Note: This is for wol clients only.
+
 Not enabled: [Unit tests](https://travis-ci.org/csteel/ansible-role-wol) are done on every commit and periodically.
 
 If you find issues, please register them in [GitHub](https://github.com/csteel/ansible-role-wol/issues)

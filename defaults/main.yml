@@ -1,7 +1,10 @@
 ---
 # defaults file for wol
 
-wol_server_hostname: localhost           # probably the Ansible controller
+# probably the Ansible controller
+wol_server: localhost
+wol_server_package_manager: apt
+
 
 # Wake-on-Lan options
 #  wol p|u|m|b|a|g|s|d...
@@ -24,5 +27,6 @@ wol_server_hostname: localhost           # probably the Ansible controller
 # d   Disable  (wake  on  nothing).   This option clears all
 #     previous options.
 
-wol_options: d  # So "d" will disable WoL and "g" would enabled WoL using MagicPacket
+wol_options: d
+# So "d" will disable WoL and "g" would enabled WoL using MagicPacket
 

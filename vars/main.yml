@@ -4,11 +4,14 @@
 _wol_client_packages:
   default:
     - ethtool
-
+  Fedora:
+    - ethtool
+    - iproute
 wol_client_packages: "{{ _wol_client_packages[ansible_os_family] | default(_wol_client_packages['default']) }}"
 
 _wol_server_packages:
   default:
     - wakeonlan
-
+  Fedora:
+    - etherwake
 wol_server_packages: "{{ _wol_server_packages[ansible_os_family] | default(_wol_server_packages['default']) }}"
