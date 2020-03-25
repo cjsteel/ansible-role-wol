@@ -72,7 +72,7 @@ A single star means the build may fail, it's marked as an experimental build.
 Example Playbook
 ----------------
 
-```
+```yaml
 ---
 - name: wol
   hosts: all
@@ -89,12 +89,12 @@ To install this role:
 - Install this role individually using `ansible-galaxy install csteel.wol`
 
 Sample roles/requirements.yml: (install with `ansible-galaxy install -r roles/requirements.yml
-```
+
+```yaml
 ---
 - name: robertdebock.bootstrap
 - name: csteel.wol
 ```
-
 
 ## License(s), prior art, inspiration and provenance
 
