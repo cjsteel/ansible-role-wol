@@ -1,3 +1,4 @@
 molecule/*/.molecule
+molecule/*/inventory
 *.log
 *.swp

@@ -5,6 +5,9 @@
 wol_server: localhost
 wol_server_package_manager: apt
 
+wol_localhost_host_vars_wol_dir : inventory/host_vars/"{{ ansible_host }}"/wol
+# wol_localhost_host_vars_wol_dir : inventory/testing/host_vars/"{{ ansible_host }}"/wol
+wol_options: d
 
 # Wake-on-Lan options
 #  wol p|u|m|b|a|g|s|d...

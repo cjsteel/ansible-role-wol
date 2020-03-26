@@ -2,6 +2,10 @@
 - name: Converge
   hosts: all
   become: yes
-  gather_facts: yes
+  pre_tasks:
+
+    - set_fact: fact_project_path="{{ lookup('pipe','pwd') }}"
+    - debug: var=fact_project_path
+
   roles:
-    - ansible-role-wol
+    - cjsteel.wol

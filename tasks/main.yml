@@ -9,17 +9,44 @@
   until: wol_client_packages_installed is succeeded
   retries: 3
 
-- name: What is the clients target nic wol status right now?
-  shell: >
-    ethtool {{ {{ ansible_default_ipv4.interface }} }} | grep 'Wake-on' | tail -1 | awk '{print substr($0,length,1)}'
-  register: wol_current_options
+# get mac address of active interface
 
-- name: Print the current wol status on our client
+- name: Create our host_vars directory for this host
+  file:
+    path: wol/active
+    state: directory
+    mode: '0770'
+
+- name: Template our mactive interfaces mac address
+  template:
+    src: active-mac.j2
+    dest: wol/active/mac
+    mode: '0770'
+    force: yes
+
+- name: Fetch active inteface file with our mac address
+  fetch:
+    src: wol/active/mac
+    dest: "{{ fact_project_path }}/inventory/host_vars"
+    fail_on_missing: yes 
+    #flat: yes
+
+# 
+
+- name: WOL | Check if wol options have been set previously
+  shell: >
+    ethtool {{ ansible_default_ipv4.interface }} | grep 'Wake-on' | tail -1 | awk '{print substr($0,length,1)}'
+  register: wol_previous_options
+
+- name: WOL | Current status is
   debug:
-    msg: "Current status is: {{ wol_current_options.stdout }}"
+    msg: "Current status is: {{ wol_previous_options.stdout }}"
 
-- name: Update client wol options if they are not equal to the current setting
+- name: WOL | Set new options it they are not the same as the current options
   shell: >
-    ethtool -s {{ wol_interface }} wol {{ wol_status }}
-  when: "wol_options != wol_current_options.stdout"
+    ethtool -s {{ ansible_default_ipv4.interface }} wol {{ wol_options }}
+  when: "wol_options != wol_previous_options.stdout"
 
+- name: WOL | Print message on how to wake up this system
+  debug:
+    msg: "Use 'wakeonlan {{ wol_mac.stdout }}'"

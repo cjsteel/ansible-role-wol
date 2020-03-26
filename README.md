@@ -1,7 +1,7 @@
 ansible-role-wol
 =========
 
-[![Build Status](https://travis-ci.org/csteel/ansible-role-wol.svg?branch=master)](https://travis-ci.org/csteel/ansible-role-wol)
+[![Build Status](https://travis-ci.org/csteel/ansible-role-wol.svg?branch=master)](https://travis-ci.org/csteel/ansible-role-wol)t
 
 The purpose of this role is to install and configure wol on your system.
 
@@ -11,15 +11,26 @@ Not enabled: [Unit tests](https://travis-ci.org/csteel/ansible-role-wol) are don
 
 If you find issues, please register them in [GitHub](https://github.com/csteel/ansible-role-wol/issues)
 
+## Testing
+
 To test this role locally please use [Molecule](https://github.com/metacloud/molecule):
+
+VM and container targeted testing does not actually test wol features as popular VM's and containers do not support WOL in the bios settings.
+
+Set environment variabiles to reflect your target os:
+
+```shell
+export namespace=robertdebock
+export image=ubuntu
+export tag=rolling
 ```
-# Docker test:
-pip install molecule ara
-molecule test
-# Vagrant tests
-molecule test --scenario-name vagrant
+
+Run your molecule commands
+
+```shell
+moelcule create
 ```
-There are many scenarios available, please have a look in the `molecule/` directory.
+
 
 Context
 --------
@@ -32,7 +43,7 @@ Requirements
 ------------
 
 - A system installed with required packages to run Ansible. Hint: [bootstrap](https://galaxy.ansible.com/robertdebock/bootstrap).
-- Access to a repository containing packages, likely on the internet.
+- Access to a repository containing packages, likely on the Internet.
 - A recent version of Ansible. (Tests run on the last 3 release of Ansible.)
 
 Role Variables
@@ -102,18 +113,18 @@ Sample roles/requirements.yml: (install with `ansible-galaxy install -r roles/re
 
 Apache License, Version 2.0, Copyright 2019 Robert de Bock (robert@meinit.nl)
 
-### Previous incarnation of ansible-role-{{ role_name}}
+### Previous incarnation of ansible-role-wol
 
 The MIT License (MIT) Copyright (c) 2015 Igor Mukhin <igor.mukhin@gmail.com>
 
-### The creation of this version of ansible-role-{{ role_name }}
+### The creation of this version of ansible-role-wol
 
 A role skeleton generated using a customized version of the excellent
 [ansible-role-skeleton](https://github.com/robertdebock/ansible-role-skeleton)
 created by [Robert de Bock](https://robertdebock.nl/).
 
 The generated skeleton was then blended with a clone this ansible role:
-[github/author/ansible-role-{{ role_name }}]((https://github.com/author/ansible-role-skeleton))
+[github/author/ansible-role-]((https://github.com/author/ansible-role-skeleton))
 
 This was then merged with the generated Robert de Bock style skeleton and modified
 in order to support additional Linux flavours, current Ansible development and
