@@ -9,11 +9,8 @@
   until: wol_client_packages_installed is succeeded
   retries: 3
 
-- name: grab the value for ansible_host to that our delegate_to stuff works
+- name: conserve value ansible_host for delegate_to tasks 
   set_fact: wol_target_host="{{ ansible_host }}"
-
-- name: debug targeted host name
-  debug: var={{ wol_target_host }}
 
 - name: Remove any stale mac address entries in "{{ inventory_dir }}/host_vars/{{ wol_target_host }}/wol"
   become: false
@@ -30,7 +27,7 @@
     state: directory
     mode: '0750'
 
-- name: Template our mactive interfaces mac address
+- name: Template the mac address of our active interface
   become: false
   delegate_to: localhost
   template:
@@ -39,24 +36,25 @@
     mode: '0770'
     force: yes
 
-- name: WOL | Check if wol options have been set previously
+- name: Check if wol options have been set previously
   shell: >
     ethtool {{ ansible_default_ipv4.interface }} | grep 'Wake-on' | tail -1 | awk '{print substr($0,length,1)}'
   register: wol_previous_options
 
-- name: WOL | Current status is
+- name: Current wol options on our active interface are
   debug:
-    msg: "Current status is: {{ wol_previous_options.stdout }}"
+    msg: "Current WOL options: {{ wol_previous_options.stdout }}"
 
-- name: WOL | Set new options it they are not the same as the current options
+- name: If the current options are not the same as new options up date the options
   shell: >
     ethtool -s {{ ansible_default_ipv4.interface }} wol {{ wol_options }}
   when: "wol_options != wol_previous_options.stdout"
 
-- set_fact:
+- name: Set the value of our active nic mac address
+  set_fact:
     fact_active_nic_mac="{{ lookup('file', '{{ inventory_dir }}/host_vars/{{ wol_target_host }}/wol/{{ ansible_default_ipv4.interface }}/mac') }}'"
 
-- name: WOL | Print message on how to wake up this system
+- name: Print message on how to wake up this system
   become: false
   delegate_to: localhost
   debug:
