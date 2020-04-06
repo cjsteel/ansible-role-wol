@@ -9,29 +9,28 @@
   until: wol_client_packages_installed is succeeded
   retries: 3
 
-# get mac address of active interface
+- name: grab the value for ansible_host to that our delegate_to stuff works
+  set_fact: wol_target_host="{{ ansible_host }}"
+
+- name: debug targeted host name
+  debug: var={{ wol_target_host }}
 
 - name: Create our host_vars directory for this host
+  become: false
+  delegate_to: localhost
   file:
-    path: wol/active
+    path: "{{ inventory_dir }}/dynamic/host_vars/{{ wol_target_host }}/wol/active"
     state: directory
     mode: '0770'
 
 - name: Template our mactive interfaces mac address
+  become: false
+  delegate_to: localhost
   template:
     src: active-mac.j2
-    dest: wol/active/mac
+    dest: "{{ inventory_dir }}/dynamic/host_vars/{{ wol_target_host }}/wol/active/mac"
     mode: '0770'
     force: yes
-
-- name: Fetch active inteface file with our mac address
-  fetch:
-    src: wol/active/mac
-    dest: "{{ fact_project_path }}/inventory/host_vars"
-    fail_on_missing: yes 
-    #flat: yes
-
-# 
 
 - name: WOL | Check if wol options have been set previously
   shell: >
@@ -48,5 +47,7 @@
   when: "wol_options != wol_previous_options.stdout"
 
 - name: WOL | Print message on how to wake up this system
+  become: false
+  delegate_to: localhost
   debug:
-    msg: "Use 'wakeonlan {{ wol_mac.stdout }}'"
+    msg: "Use 'wakeonlan {{ lookup('file', '{{ inventory_dir }}/dynamic/host_vars/{{ wol_target_host }}/wol/active/mac') }}'"
