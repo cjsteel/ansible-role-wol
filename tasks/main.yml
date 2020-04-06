@@ -50,12 +50,14 @@
     ethtool -s {{ ansible_default_ipv4.interface }} wol {{ wol_options }}
   when: "wol_options != wol_previous_options.stdout"
 
-- name: Set the value of our active nic mac address
-  set_fact:
-    fact_active_nic_mac="{{ lookup('file', '{{ inventory_dir }}/host_vars/{{ wol_target_host }}/wol/{{ ansible_default_ipv4.interface }}/mac') }}'"
+# needs loop, perhaps just drop as not required
+#
+#- name: Set the value of our active nic mac address
+#  set_fact:
+#    fact_active_nic_mac="{{ lookup('file', '{{ inventory_dir }}/host_vars/{{ wol_target_host }}/wol/{{ ansible_default_ipv4.interface }}/mac') }}'"
 
-- name: Print message on how to wake up this system
-  become: false
-  delegate_to: localhost
-  debug:
-    msg: "Use 'wakeonlan {{ wol_mac_address }}'"
+#- name: Print message on how to wake up this system
+#  become: false
+#  delegate_to: localhost
+#  debug:
+#    msg: "Use 'wakeonlan {{ wol_mac_address }}'"
