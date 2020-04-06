@@ -15,20 +15,27 @@
 - name: debug targeted host name
   debug: var={{ wol_target_host }}
 
+- name: Remove any stale mac address entries in "{{ inventory_dir }}/host_vars/{{ wol_target_host }}/wol"
+  become: false
+  delegate_to: localhost
+  file:
+    path: "{{ inventory_dir }}/host_vars/{{ wol_target_host }}/wol"
+    state: absent
+
 - name: Create our host_vars directory for this host
   become: false
   delegate_to: localhost
   file:
-    path: "{{ inventory_dir }}/dynamic/host_vars/{{ wol_target_host }}/wol/active"
+    path: "{{ inventory_dir }}/host_vars/{{ wol_target_host }}/wol/{{ ansible_default_ipv4.interface }}"
     state: directory
-    mode: '0770'
+    mode: '0750'
 
 - name: Template our mactive interfaces mac address
   become: false
   delegate_to: localhost
   template:
     src: active-mac.j2
-    dest: "{{ inventory_dir }}/dynamic/host_vars/{{ wol_target_host }}/wol/active/mac"
+    dest: "{{ inventory_dir }}/host_vars/{{ wol_target_host }}/wol/{{ ansible_default_ipv4.interface }}/mac"
     mode: '0770'
     force: yes
 
@@ -46,8 +53,11 @@
     ethtool -s {{ ansible_default_ipv4.interface }} wol {{ wol_options }}
   when: "wol_options != wol_previous_options.stdout"
 
+- set_fact:
+    fact_active_nic_mac="{{ lookup('file', '{{ inventory_dir }}/host_vars/{{ wol_target_host }}/wol/{{ ansible_default_ipv4.interface }}/mac') }}'"
+
 - name: WOL | Print message on how to wake up this system
   become: false
   delegate_to: localhost
   debug:
-    msg: "Use 'wakeonlan {{ lookup('file', '{{ inventory_dir }}/dynamic/host_vars/{{ wol_target_host }}/wol/active/mac') }}'"
+    msg: "Use 'wakeonlan {{ wol_mac_address }}'"
